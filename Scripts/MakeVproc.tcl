@@ -12,12 +12,13 @@
 #
 #  Revision History:
 #    Date      Version    Description
+#    12/2025   ????.??    Flag for when using 64-bit integers
 #    10/2022   2023.01    Initial version
 #
 #
 #  This file is part of OSVVM.
 #
-#  Copyright (c) 2022 by [OSVVM Authors](../AUTHORS.md)
+#  Copyright (c) 2022 - 2025 by [OSVVM Authors](../AUTHORS.md)
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -107,6 +108,10 @@ proc mk_vproc_common {testname libname} {
   }
 
   set flags [ gen_lib_flags ${libname} ]
+  
+  if {$::osvvm::Supports2019Integer64Bits} {
+    set flags "$flags -DVHDLINTEGER64"
+  }
 
   exec make --no-print-directory -C $::osvvm::OsvvmCoSimDirectory \
             -f $mkfilearg                                         \

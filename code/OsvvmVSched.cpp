@@ -15,6 +15,7 @@
 //
 //  Revision History:
 //    Date      Version    Description
+//    12/2025   ????.??    More generic flag to use VHPI
 //    05/2023   2023.05    Adding support for asynchronous transactions
 //                         and address bus responder transactions
 //    03/2023   2023.04    Adding basic stream support
@@ -23,7 +24,7 @@
 //
 //  This file is part of OSVVM.
 //
-//  Copyright (c) 2023 by [OSVVM Authors](../AUTHORS.md)
+//  Copyright (c) 2023 - 2025 by [OSVVM Authors](../AUTHORS.md)
 //
 //  Licensed under the Apache License, Version 2.0 (the "License");
 //  you may not use this file except in compliance with the License.
@@ -50,7 +51,7 @@
 // Pointers to state for each node (up to VP_MAX_NODES)
 pSchedState_t ns[VP_MAX_NODES] = { NULL };
 
-#if defined(ALDEC)
+#if defined(USE_VHPI)
 
 #include <vhpi_user.h>
 #include <aldecpli.h>
@@ -153,7 +154,7 @@ static void setVhpiParams(const struct vhpiCbDataS* cb, int args[], int start_of
 VPROC_RTN_TYPE VInit (VINIT_PARAMS)
 {
 
-#if defined(ALDEC)
+#if defined(USE_VHPI)
     int node;
     int args[VINIT_NUM_ARGS];
 
@@ -212,7 +213,7 @@ VPROC_RTN_TYPE VTrans (VTRANS_PARAMS)
     int VPDataWidth_int, VPAddrWidth_int;
     int VPError_int,     VPParam_int;
 
-#if defined(ALDEC)
+#if defined(USE_VHPI)
     int  args[VTRANS_NUM_ARGS];
     int  node;
     int  Interrupt;
@@ -355,7 +356,7 @@ VPROC_RTN_TYPE VTrans (VTRANS_PARAMS)
 
     DebugVPrint("===> addr=%08x rnw=%d burst=%d ticks=%d\n", VPAddr_int, VPRw_int, VPBurstSize_int, VPTicks_int);
 
-#if !defined(ALDEC)
+#if !defined(USE_VHPI)
     // Export outputs over FLI
     *VPData           = VPDataOut_int;
     *VPDataHi         = VPDataOutHi_int;
@@ -395,7 +396,7 @@ VPROC_RTN_TYPE VTrans (VTRANS_PARAMS)
 
 VPROC_RTN_TYPE VSetBurstRdByte(VSETBURSTRDBYTE_PARAMS)
 {
-#if defined(ALDEC)
+#if defined(USE_VHPI)
     int args[VSETBURSTRDBYTE_NUM_ARGS];
 
     getVhpiParams(cb, args, VSETBURSTRDBYTE_NUM_ARGS);
@@ -416,7 +417,7 @@ VPROC_RTN_TYPE VSetBurstRdByte(VSETBURSTRDBYTE_PARAMS)
 
 VPROC_RTN_TYPE VGetBurstWrByte(VGETBURSTWRBYTE_PARAMS)
 {
-#if defined(ALDEC)
+#if defined(USE_VHPI)
     int args[VGETBURSTWRBYTE_NUM_ARGS];
 
     getVhpiParams(cb, args, VGETBURSTWRBYTE_NUM_ARGS);

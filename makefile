@@ -7,16 +7,17 @@
 #     Simon Southwell     email:  simon.southwell@gmail.com
 #
 #  Description
-#    Make file supporting compiling of Co-simuation C/C++ code
+#    Make file supporting compiling of Co-simulation C/C++ code
 #    using make
 #
 #  Revision History:
 #    Date      Version    Description
+#    12/2025   ????.??    Flagging all different supported simulators  
 #    10/2022   2023.01    Initial version
 #
 #  This file is part of OSVVM.
 #
-#  Copyright (c) 2022 by [OSVVM Authors](AUTHORS.md)
+#  Copyright (c) 2022 - 2025 by [OSVVM Authors](AUTHORS.md)
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -48,6 +49,7 @@ USRCDIR            = usercode
 OPDIR              = .
 USRFLAGS           =
 SIM                = ModelSim
+ALDECDIR         =  /c/Aldec/Riviera-PRO-2025.07-x64
 
 # Derived directory locations
 SRCDIR             = code
@@ -88,6 +90,10 @@ else ifeq ("${SIM}", "RivieraPRO")
   else
     TOOLFLAGS      += -L${ALDECDIR}/interfaces/lib -l:aldecpli.lib
   endif
+else ifeq ("${SIM}", "GHDL")
+    TOOLFLAGS      += -DGHDL
+else ifeq ("${SIM}", "NVC")
+  TOOLFLAGS        += -DNVC
 else ifeq ("${SIM}", "ModelSim")
   TOOLFLAGS        = -m32 -DSIEMENS
 endif
