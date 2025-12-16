@@ -15,13 +15,14 @@
 //
 //  Revision History:
 //    Date      Version    Description
+//    12/2025   ????.??    Using 64-bit arguments when flagged to do so
 //    05/2023   2023.05    Refactored VTrans arguments
 //    10/2022   2023.01    Initial revision
 //
 //
 //  This file is part of OSVVM.
 //
-//  Copyright (c) 2022-2023 by [OSVVM Authors](../AUTHORS.md)
+//  Copyright (c) 2022 - 2025 by [OSVVM Authors](../AUTHORS.md)
 //
 //  Licensed under the Apache License, Version 2.0 (the "License");
 //  you may not use this file except in compliance with the License.
@@ -38,6 +39,7 @@
 // =========================================================================
 
 #include <string.h>
+#include <stdint.h>
 
 #ifndef _OSVVM_VSCHED_PLI_H_
 #define _OSVVM_VSCHED_PLI_H_
@@ -48,23 +50,36 @@
 #define LINKAGE
 #endif
 
-#ifndef ALDEC
+#if defined(ALDEC)
+#define USE_VHPI
+#endif
 
-#define VINIT_PARAMS               int  node
-#define VTRANS_PARAMS              int  node,     int  Interrupt,   int  VPStatus,    int  VPCount,     int  VPCountSec,  \
-                                   int* VPData,   int* VPDataHi,    int* VPDataWidth,                                     \
-                                   int* VPAddr,   int* VPAddrHi,    int* VPAddrWidth,                                     \
-                                   int* VPOp,     int* VPBurstSize, int* VPTicks,     int* VPDone,      int* VPError,     \
-                                   int* VPParam
-#define VGETBURSTWRBYTE_PARAMS     int  node,     int  idx,         int* data
-#define VSETBURSTRDBYTE_PARAMS     int  node,     int  idx,         int  data
+#if !defined(USE_VHPI)
+
+# ifdef VHDLINTEGER64
+# define vint_t int64_t
+# else
+# define vint_t int32_t
+# endif
+
+#define VINIT_PARAMS               vint_t  node
+#define VTRANS_PARAMS              vint_t  node,     vint_t  Interrupt,   vint_t  VPStatus,    vint_t  VPCount,     vint_t  VPCountSec,  \
+                                   vint_t* VPData,   vint_t* VPDataHi,    vint_t* VPDataWidth,                                           \
+                                   vint_t* VPAddr,   vint_t* VPAddrHi,    vint_t* VPAddrWidth,                                           \
+                                   vint_t* VPOp,     vint_t* VPBurstSize, vint_t* VPTicks,     vint_t* VPDone,      vint_t* VPError,     \
+                                   vint_t* VPParam
+#define VGETBURSTWRBYTE_PARAMS     vint_t  node,     vint_t  idx,         vint_t* data
+#define VSETBURSTRDBYTE_PARAMS     vint_t  node,     vint_t  idx,         vint_t  data
 
 #define VPROC_RTN_TYPE             void
 
 #else
 
 #include <vhpi_user.h>
+
+#if defined(ALDEC)
 #include <aldecpli.h>
+#endif
 
 #define VINIT_PARAMS                        const struct vhpiCbDataS* cb
 #define VTRANS_PARAMS                       const struct vhpiCbDataS* cb
@@ -80,6 +95,16 @@
 #define VGETBURSTWRBYTE_START_OF_OUTPUTS    2
 
 #define VPROC_RTN_TYPE                      PLI_VOID
+
+# if defined(ALDEC)
+# define VPROC_RTN_TYPE                      PLI_VOID
+# else
+# define VPROC_RTN_TYPE                      void
+# endif
+
+# if defined(NVC)
+# define vhpiForeignT                        vhpiForeignKindT
+# endif
 
 #endif
 

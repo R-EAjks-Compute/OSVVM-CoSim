@@ -61,9 +61,10 @@ include  ./testbench/TbDpRam/tests.pro
 include ./testbench/TbEthernet
 include ./testbench/TestCases_Ethernet
 
-# Analyze UART testbench and run tests on it
-include ./testbench/TbUart
-include ./testbench/TestCases_Uart
+# Doesn't do any self-checks
+# # Analyze UART testbench and run tests on it
+# include ./testbench/TbUart
+# include ./testbench/TestCases_Uart
 
 # Analyse AxiStream testbench and run tests on it
 include ./testbench/TbAxi4Stream
